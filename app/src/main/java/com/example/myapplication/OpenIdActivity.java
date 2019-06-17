@@ -21,6 +21,7 @@ public class OpenIdActivity extends AppCompatActivity {
     WebView webView;
     String accessTokenWG;
     String application_id;
+    PlayerWotSingleton playerWotSingleton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
