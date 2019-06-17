@@ -155,6 +155,7 @@ return f;
                 String str="";
                 Date currentDate=new Date();
                 String status="";
+                String error="";
                 DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
                 String dateText = dateFormat.format(currentDate);
                 int Attempt=0;
@@ -175,7 +176,10 @@ return f;
                    dateText = dateFormat.format(currentDate);
 
                    try {JSONObject jsonRoot=new JSONObject(str);
-                       status= jsonRoot.getString("status"); }catch (Exception s){ }
+                       status= jsonRoot.getString("status");
+                       error= jsonRoot.getString("message");
+                   }catch (Exception s){ }
+
 
 
            }
@@ -245,7 +249,7 @@ int a=1;
               if (Attempt!=MaxAttempt) {
                   logString+= dateText + " " + Integer.toString(Attempt) + " time "+status + ", Резервы не активны \n";
               }else{
-                  logString+= dateText + " " + Integer.toString(Attempt) + " time "+status + ", Сервер не отвечает!\n";
+                  logString+= dateText + " " + Integer.toString(Attempt) + " time: "+status + " error:"+error+" , Сервер не отвечает!\n";
                 }
             }
         }, 0, CountOfPeriod, TimeUnit.SECONDS);
