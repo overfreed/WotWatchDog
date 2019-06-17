@@ -16,12 +16,18 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+
 public class OpenIdActivity extends AppCompatActivity {
 
     WebView webView;
-    String accessTokenWG;
+
     String application_id;
-    PlayerWotSingleton playerWotSingleton;
+    String nameOfFilePlayerWotObj;
+    PlayerWotSingleton playerWotSingleton=PlayerWotSingleton.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +38,7 @@ public class OpenIdActivity extends AppCompatActivity {
 
         Bundle arguments = getIntent().getExtras();
         application_id = arguments.get("application_id").toString();
+        nameOfFilePlayerWotObj=arguments.get("nameOfFilePlayerWotObj").toString();
 
 
     }
@@ -53,7 +60,26 @@ public class OpenIdActivity extends AppCompatActivity {
 
                  if (urlString.contains("wot/?&status=ok&access_token=")){
 
-                     accessTokenWG=urlString.substring(urlString.indexOf("access_token=")+13,urlString.indexOf("access_token=")+53);
+
+
+                     playerWotSingleton.status=getValue(urlString, "status");
+                     playerWotSingleton.access_token=getValue(urlString, "access_token");
+                     playerWotSingleton.nickname=getValue(urlString, "nickname");
+                     playerWotSingleton.account_id=getValue(urlString, "account_id");
+                     playerWotSingleton.expires_at=getValue(urlString, "expires_at");
+
+
+                     try{
+                     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(openFileOutput(nameOfFilePlayerWotObj, MODE_PRIVATE)));
+                     // пишем данные
+                         Gson gson=new Gson();
+                         String GsonObject=gson.toJson(playerWotSingleton);
+                     bw.write(GsonObject);
+                     // закрываем поток
+                     bw.close();}catch (Exception ex){};
+
+
+
 
                      putIdInMyActivity();
 
@@ -94,8 +120,8 @@ public class OpenIdActivity extends AppCompatActivity {
 
   void  putIdInMyActivity(){
       Intent intent = new Intent(this, MainActivity.class);
-// передача объекта с ключом "hello" и значением "Hello World"
-      intent.putExtra("accessTokenWG", accessTokenWG);
+
+
 // запуск SecondActivity
       startActivity(intent);
 
@@ -113,18 +139,24 @@ public class OpenIdActivity extends AppCompatActivity {
         cookieSyncMngr.sync();
 
         WebSettings webSettings = webView.getSettings();
-
         webSettings.setJavaScriptEnabled(true);
-
-
-
         webView.loadUrl("https://api.worldoftanks.ru/wot/auth/login/?application_id="+application_id+"&redirect_uri=https%3A%2F%2Fapi.worldoftanks.ru%2Fwot%2F%2Fblank%2Fwot%2F");
-
-
     }
 
 
+    public String getValue(String str, String value) {
 
+        String result = "";
+        String obrez = str.substring(str.indexOf(value) + value.length() + 1);
+
+        if (obrez.contains("&")) {
+            result = obrez.substring(0, obrez.indexOf("&"));
+        } else {
+            result = obrez;
+        }
+        return result;
+
+    }
 
 
 }

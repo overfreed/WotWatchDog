@@ -27,6 +27,10 @@ import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -53,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
     static String f;
     Intent myService;
     String application_id="c5b28492a39dbf3654412f96f3c42e1f";
-    String accessTokenWG;
-    String accessTokenWGStatus;
+    String nameOfFilePlayerWotObj="PlayerJSON";
+    PlayerWotSingleton playerWotSingleton=PlayerWotSingleton.getInstance();
     SharedPreferences sPref;
 
 //my git comment 3
@@ -87,41 +91,29 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        Bundle arguments = getIntent().getExtras();
-        if(arguments!=null){
-             accessTokenWG = arguments.getString("accessTokenWG",null);
 
-if (accessTokenWG!=null) {
-            try {
-                // отрываем поток для записи
-                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
-                        openFileOutput("fileOfAccessTokenWG", MODE_PRIVATE)));
-                // пишем данные
-                bw.write(accessTokenWG);
-                // закрываем поток
-                bw.close();
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-}
-
-
-
-                 }
 
 
 
             try {
+                Gson gson=new Gson();
                 // открываем поток для чтения
                 BufferedReader br = new BufferedReader(new InputStreamReader(
-                        openFileInput("fileOfAccessTokenWG")));
+                        openFileInput(nameOfFilePlayerWotObj)));
                 String str = "";
                 // читаем содержимое
                 while ((str = br.readLine()) != null) {
-                    accessTokenWG=str;
+                    try{
+                    JSONObject jsonRoot=new JSONObject(str);
+
+
+                    playerWotSingleton.status=jsonRoot.getString("status");
+                    playerWotSingleton.access_token=jsonRoot.getString("access_token");
+                    playerWotSingleton.nickname=jsonRoot.getString("nickname");
+                    playerWotSingleton.account_id=jsonRoot.getString("account_id");
+                    playerWotSingleton.expires_at=jsonRoot.getString("expires_at");
+                    } catch(Exception ex){}
+
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -293,7 +285,7 @@ if (accessTokenWG!=null) {
 
 
         myService = new Intent(this, MyServiceGetWotStatus.class);
-        myService.putExtra("accessTokenWG",accessTokenWG);
+
         myService.putExtra("application_id",application_id);
         startService(myService);
 
@@ -329,6 +321,8 @@ if (accessTokenWG!=null) {
 
         Intent intent = new Intent(MainActivity.this, OpenIdActivity.class);
         intent.putExtra("application_id",application_id);
+        intent.putExtra("nameOfFilePlayerWotObj",nameOfFilePlayerWotObj);
+
         startActivity(intent);
 
 
@@ -342,11 +336,14 @@ if (accessTokenWG!=null) {
 
     public void buttonGetStatus(View view) throws Exception {
 
-//        TextView textViewStatusAcc = findViewById(R.id.textViewStatusAcc);
-//        // задаём текст
-//        textViewStatusAcc.setText(  doGet("https://api.worldoftanks.ru/wot/stronghold/clanreserves/?application_id="+application_id+"&access_token="+accessTokenWG));
-        myService = new Intent(this, MyServiceGetWotStatus.class);
-       boolean b=isMyServiceRunning(MyServiceGetWotStatus.class);
+ TextView textViewStatusAcc = findViewById(R.id.textViewStatusAcc);
+
+        SimpleDateFormat s = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss");
+        String timeString = s.format(new Date(Long.valueOf(playerWotSingleton.expires_at)*1000));
+
+
+
+ textViewStatusAcc.setText("Игрок: "+playerWotSingleton.nickname+" до: "+ timeString );
 
 
     }
