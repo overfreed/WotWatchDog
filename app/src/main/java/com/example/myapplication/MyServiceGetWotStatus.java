@@ -69,9 +69,11 @@ public class MyServiceGetWotStatus extends Service {
 
     Handler handler;
     static String f;
-    static int TimeOfReload;
+    int CountOfPeriod=300;
+    int MaxAttempt=100;
+    int delayMS=1600;
 
-    String accessTokenWG;
+    PlayerWotSingleton playerWotSingleton=PlayerWotSingleton.getInstance();
     String application_id;
 
     private void runOnUiThread(Runnable runnable) {
@@ -94,7 +96,7 @@ private String GetOnServer(){
         protected String doInBackground(Void... voids) {
             String s = "";
             try {
-                s = doGet("https://api.worldoftanks.ru/wot/stronghold/clanreserves/?application_id="+application_id+"&access_token="+accessTokenWG);
+                s = doGet("https://api.worldoftanks.ru/wot/stronghold/clanreserves/?application_id="+application_id+"&access_token="+playerWotSingleton.access_token);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -156,14 +158,14 @@ return f;
                 DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
                 String dateText = dateFormat.format(currentDate);
                 int Attempt=0;
-                int MaxAttempt=200;
+
 
              //Попытка получить корректный ответ
               while (!status.equals("ok")&&(Attempt<MaxAttempt)) {
                    Attempt=Attempt+1;
 
                    try {
-                       TimeUnit.SECONDS.sleep(1);
+                       TimeUnit.MILLISECONDS.sleep(delayMS);
                    } catch (InterruptedException e) {
                        e.printStackTrace();
                    }
@@ -246,7 +248,7 @@ int a=1;
                   logString+= dateText + " " + Integer.toString(Attempt) + " time "+status + ", Сервер не отвечает!\n";
                 }
             }
-        }, 0, 300, TimeUnit.SECONDS);
+        }, 0, CountOfPeriod, TimeUnit.SECONDS);
 
 
     }
@@ -287,7 +289,7 @@ int a=1;
     public int onStartCommand(Intent intent, int flags, int startId) {
 
 
-        accessTokenWG=(String) intent.getExtras().get("accessTokenWG");
+
         application_id=(String) intent.getExtras().get("application_id");
 
 
