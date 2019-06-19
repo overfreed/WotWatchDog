@@ -56,21 +56,18 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class MainActivity extends AppCompatActivity {
     static String f;
     Intent myService;
-    String application_id="c5b28492a39dbf3654412f96f3c42e1f";
-    String nameOfFilePlayerWotObj="PlayerJSON";
-    PlayerWotSingleton playerWotSingleton=PlayerWotSingleton.getInstance();
+    String application_id = "c5b28492a39dbf3654412f96f3c42e1f";
+    String nameOfFilePlayerWotObj = "PlayerJSON";
+    PlayerWotSingleton playerWotSingleton = PlayerWotSingleton.getInstance();
     SharedPreferences sPref;
 
-//my git comment 3
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
-            Toolbar toolbar = findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-
-
-
+    //my git comment 3
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
 
         //Инициализация бродкаст ресивера
@@ -86,71 +83,64 @@ public class MainActivity extends AppCompatActivity {
         //настройки приложения
 
 
+        try {
+            Gson gson = new Gson();
+            // открываем поток для чтения
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    openFileInput(nameOfFilePlayerWotObj)));
+            String str = "";
+            // читаем содержимое
+            while ((str = br.readLine()) != null) {
+                try {
+                    JSONObject jsonRoot = new JSONObject(str);
 
 
-
-
-
-
-
-
-
-            try {
-                Gson gson=new Gson();
-                // открываем поток для чтения
-                BufferedReader br = new BufferedReader(new InputStreamReader(
-                        openFileInput(nameOfFilePlayerWotObj)));
-                String str = "";
-                // читаем содержимое
-                while ((str = br.readLine()) != null) {
-                    try{
-                    JSONObject jsonRoot=new JSONObject(str);
-
-
-                    playerWotSingleton.status=jsonRoot.getString("status");
-                    playerWotSingleton.access_token=jsonRoot.getString("access_token");
-                    playerWotSingleton.nickname=jsonRoot.getString("nickname");
-                    playerWotSingleton.account_id=jsonRoot.getString("account_id");
-                    playerWotSingleton.expires_at=jsonRoot.getString("expires_at");
-                    } catch(Exception ex){}
-
+                    playerWotSingleton.status = jsonRoot.getString("status");
+                    playerWotSingleton.access_token = jsonRoot.getString("access_token");
+                    playerWotSingleton.nickname = jsonRoot.getString("nickname");
+                    playerWotSingleton.account_id = jsonRoot.getString("account_id");
+                    playerWotSingleton.expires_at = jsonRoot.getString("expires_at");
+                } catch (Exception ex) {
                 }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
+//Если есть токен, то запускаем сервис, иначе просим авторизоваться
+        View buttonStartServiceView = findViewById(R.id.buttonStartService);
+        try {
+            if (!playerWotSingleton.access_token.equals("")) {
 
+                buttonStartService(buttonStartServiceView);
+            } else {
+                //не важно что не тот вью. мы им не пользуемся
+                buttonSignIn(buttonStartServiceView);
+            }
+        } catch (Exception ex) {
 
-
-
+        }
+    }
 
 
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if(action.equals("SetMessageFromMyActivity")){
+            if (action.equals("SetMessageFromMyActivity")) {
                 // Инициализируем компонент
                 TextView textView = findViewById(R.id.editText2);
                 // задаём текст
-                textView.setText( textView.getText()+intent.getStringExtra("logString"));
+                textView.setText(textView.getText() + intent.getStringExtra("logString"));
 
-            }
-            else if(action.equals(android.telephony.TelephonyManager.ACTION_PHONE_STATE_CHANGED)){
+            } else if (action.equals(android.telephony.TelephonyManager.ACTION_PHONE_STATE_CHANGED)) {
                 //action for phone state changed
             }
         }
     };
-
-
-
-
-
-
 
 
     @Override
@@ -176,26 +166,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
-    public static boolean hasConnection(final Context context)
-    {
-        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    public static boolean hasConnection(final Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifiInfo;
         wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if (wifiInfo != null && wifiInfo.isConnected())
-        {
+        if (wifiInfo != null && wifiInfo.isConnected()) {
             return true;
         }
 
         wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        if (wifiInfo != null && wifiInfo.isConnected())
-        {
+        if (wifiInfo != null && wifiInfo.isConnected()) {
             return true;
         }
         wifiInfo = cm.getActiveNetworkInfo();
-        if (wifiInfo != null && wifiInfo.isConnected())
-        {
+        if (wifiInfo != null && wifiInfo.isConnected()) {
             return true;
         }
         return false;
@@ -209,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
 
         //add reuqest header
         connection.setRequestMethod("GET");
-        connection.setRequestProperty("User-Agent", "Mozilla/5.0" );
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0");
         connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
         connection.setRequestProperty("Content-Type", "application/json");
 
@@ -225,12 +209,11 @@ public class MainActivity extends AppCompatActivity {
 //      print result
 
 
-
         return response.toString();
     }
 
 
-    public String asyncWebGet(final String webRequest){
+    public String asyncWebGet(final String webRequest) {
         new AsyncTask<Void, String, String>() {
 
 
@@ -250,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        f=result;
+                        f = result;
                         // tvRez.setText(result);
                     }
                 });
@@ -272,39 +255,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
     public void buttonStartService(View view) throws Exception {
 
 
-            if(hasConnection(this))
-                Toast.makeText(this, "Сервис запущен", LENGTH_SHORT).show();
-                else
-                Toast.makeText(this, "Отсутсвует интернет соединение. Сервис запустится после появления интернета автоматически.", LENGTH_SHORT).show();
-
+        if (hasConnection(this))
+            Toast.makeText(this, "Сервис запущен", LENGTH_SHORT).show();
+        else
+            Toast.makeText(this, "Отсутсвует интернет соединение. Сервис запустится после появления интернета автоматически.", LENGTH_SHORT).show();
 
 
         myService = new Intent(this, MyServiceGetWotStatus.class);
 
-        myService.putExtra("application_id",application_id);
+        myService.putExtra("application_id", application_id);
         startService(myService);
 
-    }
 
+    }
 
 
     public void ButtonStopClick(View view) throws Exception {
 
         stopService(myService);
 
-        Toast.makeText(this,"Сервис остановлен", LENGTH_SHORT).show();
+        Toast.makeText(this, "Сервис остановлен", LENGTH_SHORT).show();
 
-
-    
 
     }
-
-
 
 
     public void buttonSendBroadcast(View view) throws Exception {
@@ -320,8 +296,8 @@ public class MainActivity extends AppCompatActivity {
     public void buttonSignIn(View view) throws Exception {
 
         Intent intent = new Intent(MainActivity.this, OpenIdActivity.class);
-        intent.putExtra("application_id",application_id);
-        intent.putExtra("nameOfFilePlayerWotObj",nameOfFilePlayerWotObj);
+        intent.putExtra("application_id", application_id);
+        intent.putExtra("nameOfFilePlayerWotObj", nameOfFilePlayerWotObj);
 
         startActivity(intent);
 
@@ -336,14 +312,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void buttonGetStatus(View view) throws Exception {
 
- TextView textViewStatusAcc = findViewById(R.id.textViewStatusAcc);
+        TextView textViewStatusAcc = findViewById(R.id.textViewStatusAcc);
 
         SimpleDateFormat s = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss");
-        String timeString = s.format(new Date(Long.valueOf(playerWotSingleton.expires_at)*1000));
+        String timeString = s.format(new Date(Long.valueOf(playerWotSingleton.expires_at) * 1000));
 
 
-
- textViewStatusAcc.setText("Игрок: "+playerWotSingleton.nickname+" до: "+ timeString );
+        textViewStatusAcc.setText("Игрок: " + playerWotSingleton.nickname + " до: " + timeString);
 
 
     }
