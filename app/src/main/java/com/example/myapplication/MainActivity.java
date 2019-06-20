@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     String application_id = "c5b28492a39dbf3654412f96f3c42e1f";
     String nameOfFilePlayerWotObj = "PlayerJSON";
     PlayerWotSingleton playerWotSingleton = PlayerWotSingleton.getInstance();
-    SharedPreferences sPref;
+
 
     //my git comment 3
     @Override
@@ -134,7 +134,8 @@ public class MainActivity extends AppCompatActivity {
                 // Инициализируем компонент
                 TextView textView = findViewById(R.id.editText2);
                 // задаём текст
-                textView.setText(textView.getText() + intent.getStringExtra("logString"));
+              //  textView.setText(textView.getText() + intent.getStringExtra("logString"));
+                textView.setText(intent.getStringExtra("logString"));
 
             } else if (action.equals(android.telephony.TelephonyManager.ACTION_PHONE_STATE_CHANGED)) {
                 //action for phone state changed
@@ -263,11 +264,13 @@ public class MainActivity extends AppCompatActivity {
         else
             Toast.makeText(this, "Отсутсвует интернет соединение. Сервис запустится после появления интернета автоматически.", LENGTH_SHORT).show();
 
-
         myService = new Intent(this, MyServiceGetWotStatus.class);
 
         myService.putExtra("application_id", application_id);
+
         startService(myService);
+
+
 
 
     }

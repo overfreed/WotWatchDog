@@ -66,7 +66,7 @@ public class MyServiceGetWotStatus extends Service {
     int mStartMode;       // indicates how to behave if the service is killed
     IBinder mBinder;      // interface for clients that bind
     boolean mAllowRebind; // indicates whether onRebind should be used
-
+    String application_id;
     Handler handler;
     static String f;
     int CountOfPeriod=300;
@@ -74,7 +74,7 @@ public class MyServiceGetWotStatus extends Service {
     int delayMS=1600;
 
     PlayerWotSingleton playerWotSingleton=PlayerWotSingleton.getInstance();
-    String application_id;
+
 
     private void runOnUiThread(Runnable runnable) {
         handler.post(runnable);
@@ -294,7 +294,21 @@ int a=1;
 
 
 
+
         application_id=(String) intent.getExtras().get("application_id");
+
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("WotStatus")
+                .setContentText("my string");
+        int a=1;
+        a=2;
+        Notification notification = builder.build();
+
+
+        startForeground(1394,notification);
+
 
 
         return mStartMode;
@@ -386,7 +400,7 @@ int a=1;
                 intent1.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                 sendBroadcast(intent1);
 
-                logString="";
+               // logString="";
 
 
 

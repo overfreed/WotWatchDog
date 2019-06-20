@@ -12,9 +12,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/wot_launcher_foreground1"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/wot_launcher_foreground1"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -25,7 +25,9 @@
         <service
             android:name=".MyServiceGetWotStatus"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETE"
+            android:process=":WotReserveStatus"></service>
 
         <activity
             android:name=".MainActivity"
