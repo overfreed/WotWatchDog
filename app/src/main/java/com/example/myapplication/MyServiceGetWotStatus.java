@@ -66,7 +66,6 @@ public class MyServiceGetWotStatus extends Service {
     int mStartMode;       // indicates how to behave if the service is killed
     IBinder mBinder;      // interface for clients that bind
     boolean mAllowRebind; // indicates whether onRebind should be used
-    String application_id;
     Handler handler;
     static String f;
     int CountOfPeriod=300;
@@ -96,7 +95,8 @@ private String GetOnServer(){
         protected String doInBackground(Void... voids) {
             String s = "";
             try {
-                s = doGet("https://api.worldoftanks.ru/wot/stronghold/clanreserves/?application_id="+application_id+"&access_token="+playerWotSingleton.access_token);
+
+                s = doGet("https://api.worldoftanks.ru/wot/stronghold/clanreserves/?application_id="+playerWotSingleton.application_id+"&access_token="+playerWotSingleton.access_token);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -294,16 +294,17 @@ int a=1;
 
 
 
+int a;
+a=1;
 
-        application_id=(String) intent.getExtras().get("application_id");
+
 
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("WotStatus")
-                .setContentText("my string");
-        int a=1;
-        a=2;
+               .setContentText("my string");
+
         Notification notification = builder.build();
 
 

@@ -70,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
+        //Установка app_id
+        playerWotSingleton.application_id=application_id;
+
         //Инициализация бродкаст ресивера
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.provider.Telephony.SMS_RECEIVED");
@@ -265,8 +268,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Отсутсвует интернет соединение. Сервис запустится после появления интернета автоматически.", LENGTH_SHORT).show();
 
         myService = new Intent(this, MyServiceGetWotStatus.class);
-
-        myService.putExtra("application_id", application_id);
 
         startService(myService);
 

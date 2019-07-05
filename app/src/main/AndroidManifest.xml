@@ -22,12 +22,7 @@
             android:label="@string/title_activity_open_id"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
-        <service
-            android:name=".MyServiceGetWotStatus"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETE"
-            android:process=":WotReserveStatus"></service>
+
 
         <activity
             android:name=".MainActivity"
@@ -39,6 +34,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".MyServiceGetWotStatus"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETE">
+            <!---android:process=":WotReserveStatus">-->
+
+        </service>
+
     </application>
 
 </manifest>
