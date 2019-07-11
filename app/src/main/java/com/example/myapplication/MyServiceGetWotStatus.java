@@ -271,7 +271,7 @@ int a=1;
     public  void notic(int id,boolean sound,String titleStr,String bodyStr){
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_stat_name)
                 .setContentTitle(titleStr)
                 .setContentText(bodyStr);
 
@@ -317,7 +317,7 @@ int a=1;
                 .setContentIntent(contentIntent)
                 .setContentTitle("WotStatus")
                 .setSmallIcon(R.drawable.ic_stat_name)
-               .setContentText("my string");
+               .setContentText("     /\\_/\\");
 
         Notification notification = builder.build();
 
