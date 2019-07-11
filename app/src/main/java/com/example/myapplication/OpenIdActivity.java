@@ -31,6 +31,7 @@ public class OpenIdActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_id);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -39,6 +40,15 @@ public class OpenIdActivity extends AppCompatActivity {
         Bundle arguments = getIntent().getExtras();
         application_id = arguments.get("application_id").toString();
         nameOfFilePlayerWotObj=arguments.get("nameOfFilePlayerWotObj").toString();
+
+        try {
+            View view = findViewById(R.id.editText2);
+            buttonTry(view);
+        }catch(Exception ex){
+
+        }
+
+
 
 
     }

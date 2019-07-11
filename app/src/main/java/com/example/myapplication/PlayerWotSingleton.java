@@ -7,6 +7,7 @@ public class PlayerWotSingleton {
     public String nickname="";
     public String account_id="";
     public String expires_at="";
+    public String application_id="";
 
 
 

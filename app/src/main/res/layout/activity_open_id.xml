@@ -12,18 +12,18 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <Button
-            android:id="@+id/button5"
+            android:id="@+id/buttonTry"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:onClick="buttonTry"
-            android:text="продлить" />
+            android:text="ВОЙТИ" />
 
         <Button
             android:id="@+id/button6"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:onClick="buttonExit"
-            android:text="Вход" />
+            android:text="другой аккаунт" />
 
     </android.support.design.widget.AppBarLayout>
 

@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
@@ -34,6 +35,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Time;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import java.text.DateFormat;
@@ -62,11 +64,10 @@ public class MyServiceGetWotStatus extends Service {
     public String logString="";
 
     public MyServiceGetWotStatus() { }
-
+    ScheduledFuture sF;
     int mStartMode;       // indicates how to behave if the service is killed
     IBinder mBinder;      // interface for clients that bind
     boolean mAllowRebind; // indicates whether onRebind should be used
-
     Handler handler;
     static String f;
     int CountOfPeriod=300;
@@ -74,7 +75,7 @@ public class MyServiceGetWotStatus extends Service {
     int delayMS=1600;
 
     PlayerWotSingleton playerWotSingleton=PlayerWotSingleton.getInstance();
-    String application_id;
+
 
     private void runOnUiThread(Runnable runnable) {
         handler.post(runnable);
@@ -89,14 +90,19 @@ public class MyServiceGetWotStatus extends Service {
 
 
 private String GetOnServer(){
-    new AsyncTask<Void, String, String>() {
+
+
+ new AsyncTask<Void, String, String>() {
 
 
         @Override
         protected String doInBackground(Void... voids) {
             String s = "";
             try {
-                s = doGet("https://api.worldoftanks.ru/wot/stronghold/clanreserves/?application_id="+application_id+"&access_token="+playerWotSingleton.access_token);
+
+                s = doGet("https://api.worldoftanks.ru/wot/stronghold/clanreserves/?application_id="+playerWotSingleton.application_id+"&access_token="+playerWotSingleton.access_token);
+               // s="{\"status\":\"ok\",\"meta\":{\"count\":8},\"data\":[{\"name\":\"Дополнительный инструктаж\",\"bonus_type\":\"к опыту экипажа\",\"disposable\":false,\"in_stock\":[{\"status\":\"ready_to_activate\",\"action_time\":3600,\"active_till\":null,\"level\":9,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":2.0,\"battle_type\":\"В клановых и турнирных боях\"},{\"value\":1.5,\"battle_type\":\"В случайных боях\"}],\"x_level_only\":false},{\"status\":\"ready_to_activate\",\"action_time\":7200,\"active_till\":null,\"level\":10,\"activated_at\":null,\"amount\":1,\"bonus_values\":[{\"value\":2.0,\"battle_type\":\"В клановых и турнирных боях\"},{\"value\":1.5,\"battle_type\":\"В случайных боях\"}],\"x_level_only\":false}],\"type\":\"ADDITIONAL_BRIEFING\",\"icon\":\"https:\\/\\/wgsh-wotru.wargaming.net\\/cdn_static\\/reserves\\/additional-briefing.png\"},{\"name\":\"Авиаудар\",\"bonus_type\":\"к промресурсу\",\"disposable\":true,\"in_stock\":[{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":3,\"activated_at\":null,\"amount\":2,\"bonus_values\":[{\"value\":0.15,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":5,\"activated_at\":null,\"amount\":2,\"bonus_values\":[{\"value\":0.3,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":6,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.35,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":7,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.4,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":8,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.5,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":9,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.55,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":10,\"activated_at\":null,\"amount\":1,\"bonus_values\":[{\"value\":0.6,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false}],\"type\":\"AIRSTRIKE\",\"icon\":\"https:\\/\\/wgsh-wotru.wargaming.net\\/cdn_static\\/reserves\\/airstrike.png\"},{\"name\":\"Артобстрел\",\"bonus_type\":\"к промресурсу\",\"disposable\":true,\"in_stock\":[{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":5,\"activated_at\":null,\"amount\":2,\"bonus_values\":[{\"value\":0.3,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":6,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.35,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":7,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.4,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":8,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.5,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":9,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.55,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":10,\"activated_at\":null,\"amount\":1,\"bonus_values\":[{\"value\":0.6,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false}],\"type\":\"ARTILLERY_STRIKE\",\"icon\":\"https:\\/\\/wgsh-wotru.wargaming.net\\/cdn_static\\/reserves\\/artillery-strike.png\"},{\"name\":\"Боевые выплаты\",\"bonus_type\":\"к кредитам\",\"disposable\":false,\"in_stock\":[{\"status\":\"ready_to_activate\",\"action_time\":7200,\"active_till\":null,\"level\":6,\"activated_at\":null,\"amount\":1,\"bonus_values\":[{\"value\":0.3,\"battle_type\":\"В клановых и турнирных боях\"},{\"value\":0.15,\"battle_type\":\"В случайных боях\"}],\"x_level_only\":false},{\"status\":\"ready_to_activate\",\"action_time\":7200,\"active_till\":null,\"level\":9,\"activated_at\":null,\"amount\":2,\"bonus_values\":[{\"value\":0.5,\"battle_type\":\"В клановых и турнирных боях\"},{\"value\":0.25,\"battle_type\":\"В случайных боях\"}],\"x_level_only\":false},{\"status\":\"ready_to_activate\",\"action_time\":7200,\"active_till\":null,\"level\":10,\"activated_at\":null,\"amount\":1,\"bonus_values\":[{\"value\":0.75,\"battle_type\":\"В клановых и турнирных боях\"},{\"value\":0.3,\"battle_type\":\"В случайных боях\"}],\"x_level_only\":false}],\"type\":\"BATTLE_PAYMENTS\",\"icon\":\"https:\\/\\/wgsh-wotru.wargaming.net\\/cdn_static\\/reserves\\/battle-payments.png\"},{\"name\":\"Большегрузный транспорт\",\"bonus_type\":\"к промресурсу\",\"disposable\":true,\"in_stock\":[{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":5,\"activated_at\":null,\"amount\":2,\"bonus_values\":[{\"value\":0.3,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":6,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.35,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":7,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.4,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":8,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.5,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":9,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.55,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":10,\"activated_at\":null,\"amount\":1,\"bonus_values\":[{\"value\":0.6,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false}],\"type\":\"HIGH_CAPACITY_TRANSPORT\",\"icon\":\"https:\\/\\/wgsh-wotru.wargaming.net\\/cdn_static\\/reserves\\/high-capacity-transport.png\"},{\"name\":\"Военные учения\",\"bonus_type\":\"к свободному опыту\",\"disposable\":false,\"in_stock\":[{\"status\":\"ready_to_activate\",\"action_time\":7200,\"active_till\":null,\"level\":4,\"activated_at\":null,\"amount\":1,\"bonus_values\":[{\"value\":1.0,\"battle_type\":\"Во всех боях\"}],\"x_level_only\":false},{\"status\":\"ready_to_activate\",\"action_time\":3600,\"active_till\":null,\"level\":9,\"activated_at\":null,\"amount\":2,\"bonus_values\":[{\"value\":2.5,\"battle_type\":\"Во всех боях\"}],\"x_level_only\":false},{\"status\":\"ready_to_activate\",\"action_time\":7200,\"active_till\":null,\"level\":10,\"activated_at\":null,\"amount\":1,\"bonus_values\":[{\"value\":2.5,\"battle_type\":\"Во всех боях\"}],\"x_level_only\":false}],\"type\":\"MILITARY_MANEUVERS\",\"icon\":\"https:\\/\\/wgsh-wotru.wargaming.net\\/cdn_static\\/reserves\\/military-maneuvers.png\"},{\"name\":\"Реквизиция\",\"bonus_type\":\"к промресурсу\",\"disposable\":true,\"in_stock\":[{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":5,\"activated_at\":null,\"amount\":2,\"bonus_values\":[{\"value\":0.3,\"battle_type\":\"В Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":6,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.35,\"battle_type\":\"В Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":7,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.4,\"battle_type\":\"В Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":8,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.5,\"battle_type\":\"В Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":9,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.55,\"battle_type\":\"В Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":10,\"activated_at\":null,\"amount\":1,\"bonus_values\":[{\"value\":0.6,\"battle_type\":\"В Битвах за Укрепрайон\"}],\"x_level_only\":false}],\"type\":\"REQUISITION\",\"icon\":\"https:\\/\\/wgsh-wotru.wargaming.net\\/cdn_static\\/reserves\\/requisition.png\"},{\"name\":\"Тактическая подготовка\",\"bonus_type\":\"к боевому опыту\",\"disposable\":false,\"in_stock\":[{\"status\":\"ready_to_activate\",\"action_time\":7200,\"active_till\":null,\"level\":6,\"activated_at\":null,\"amount\":1,\"bonus_values\":[{\"value\":0.2,\"battle_type\":\"Во всех боях\"}],\"x_level_only\":false},{\"status\":\"ready_to_activate\",\"action_time\":3600,\"active_till\":null,\"level\":9,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.5,\"battle_type\":\"Во всех боях\"}],\"x_level_only\":false},{\"status\":\"ready_to_activate\",\"action_time\":7200,\"active_till\":null,\"level\":10,\"activated_at\":null,\"amount\":1,\"bonus_values\":[{\"value\":0.5,\"battle_type\":\"Во всех боях\"}],\"x_level_only\":false}],\"type\":\"TACTICAL_TRAINING\",\"icon\":\"https:\\/\\/wgsh-wotru.wargaming.net\\/cdn_static\\/reserves\\/tactical-training.png\"}]}\"";
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -114,6 +120,8 @@ private String GetOnServer(){
             });
         }
     }.execute();
+
+//f="{\"status\":\"ok\",\"meta\":{\"count\":8},\"data\":[{\"name\":\"Дополнительный инструктаж\",\"bonus_type\":\"к опыту экипажа\",\"disposable\":false,\"in_stock\":[{\"status\":\"ready_to_activate\",\"action_time\":3600,\"active_till\":null,\"level\":9,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":2.0,\"battle_type\":\"В клановых и турнирных боях\"},{\"value\":1.5,\"battle_type\":\"В случайных боях\"}],\"x_level_only\":false},{\"status\":\"ready_to_activate\",\"action_time\":7200,\"active_till\":null,\"level\":10,\"activated_at\":null,\"amount\":1,\"bonus_values\":[{\"value\":2.0,\"battle_type\":\"В клановых и турнирных боях\"},{\"value\":1.5,\"battle_type\":\"В случайных боях\"}],\"x_level_only\":false}],\"type\":\"ADDITIONAL_BRIEFING\",\"icon\":\"https:\\/\\/wgsh-wotru-static.wgcdn.co\\/cdn_static\\/reserves\\/additional-briefing.png\"},{\"name\":\"Авиаудар\",\"bonus_type\":\"к промресурсу\",\"disposable\":true,\"in_stock\":[{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":3,\"activated_at\":null,\"amount\":2,\"bonus_values\":[{\"value\":0.15,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":5,\"activated_at\":null,\"amount\":2,\"bonus_values\":[{\"value\":0.3,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":6,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.35,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":7,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.4,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":8,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.5,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":9,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.55,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":10,\"activated_at\":null,\"amount\":1,\"bonus_values\":[{\"value\":0.6,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false}],\"type\":\"AIRSTRIKE\",\"icon\":\"https:\\/\\/wgsh-wotru-static.wgcdn.co\\/cdn_static\\/reserves\\/airstrike.png\"},{\"name\":\"Артобстрел\",\"bonus_type\":\"к промресурсу\",\"disposable\":true,\"in_stock\":[{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":5,\"activated_at\":null,\"amount\":2,\"bonus_values\":[{\"value\":0.3,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":6,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.35,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":7,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.4,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":8,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.5,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":9,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.55,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":10,\"activated_at\":null,\"amount\":1,\"bonus_values\":[{\"value\":0.6,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false}],\"type\":\"ARTILLERY_STRIKE\",\"icon\":\"https:\\/\\/wgsh-wotru-static.wgcdn.co\\/cdn_static\\/reserves\\/artillery-strike.png\"},{\"name\":\"Боевые выплаты\",\"bonus_type\":\"к кредитам\",\"disposable\":false,\"in_stock\":[{\"status\":\"active\",\"action_time\":7200,\"active_till\":1560622808,\"level\":6,\"activated_at\":1560615608,\"amount\":5,\"bonus_values\":[{\"value\":0.3,\"battle_type\":\"В клановых и турнирных боях\"},{\"value\":0.15,\"battle_type\":\"В случайных боях\"}],\"x_level_only\":false},{\"status\":\"cannot_be_activated\",\"action_time\":7200,\"active_till\":null,\"level\":9,\"activated_at\":null,\"amount\":2,\"bonus_values\":[{\"value\":0.5,\"battle_type\":\"В клановых и турнирных боях\"},{\"value\":0.25,\"battle_type\":\"В случайных боях\"}],\"x_level_only\":false},{\"status\":\"cannot_be_activated\",\"action_time\":7200,\"active_till\":null,\"level\":10,\"activated_at\":null,\"amount\":1,\"bonus_values\":[{\"value\":0.75,\"battle_type\":\"В клановых и турнирных боях\"},{\"value\":0.3,\"battle_type\":\"В случайных боях\"}],\"x_level_only\":false}],\"type\":\"BATTLE_PAYMENTS\",\"icon\":\"https:\\/\\/wgsh-wotru-static.wgcdn.co\\/cdn_static\\/reserves\\/battle-payments.png\"},{\"name\":\"Большегрузный транспорт\",\"bonus_type\":\"к промресурсу\",\"disposable\":true,\"in_stock\":[{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":5,\"activated_at\":null,\"amount\":2,\"bonus_values\":[{\"value\":0.3,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":6,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.35,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":7,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.4,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":8,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.5,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":9,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.55,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":10,\"activated_at\":null,\"amount\":1,\"bonus_values\":[{\"value\":0.6,\"battle_type\":\"В Вылазках и Битвах за Укрепрайон\"}],\"x_level_only\":false}],\"type\":\"HIGH_CAPACITY_TRANSPORT\",\"icon\":\"https:\\/\\/wgsh-wotru-static.wgcdn.co\\/cdn_static\\/reserves\\/high-capacity-transport.png\"},{\"name\":\"Военные учения\",\"bonus_type\":\"к свободному опыту\",\"disposable\":false,\"in_stock\":[{\"status\":\"ready_to_activate\",\"action_time\":3600,\"active_till\":null,\"level\":9,\"activated_at\":null,\"amount\":2,\"bonus_values\":[{\"value\":2.5,\"battle_type\":\"Во всех боях\"}],\"x_level_only\":false},{\"status\":\"ready_to_activate\",\"action_time\":7200,\"active_till\":null,\"level\":10,\"activated_at\":null,\"amount\":1,\"bonus_values\":[{\"value\":2.5,\"battle_type\":\"Во всех боях\"}],\"x_level_only\":false}],\"type\":\"MILITARY_MANEUVERS\",\"icon\":\"https:\\/\\/wgsh-wotru-static.wgcdn.co\\/cdn_static\\/reserves\\/military-maneuvers.png\"},{\"name\":\"Реквизиция\",\"bonus_type\":\"к промресурсу\",\"disposable\":true,\"in_stock\":[{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":5,\"activated_at\":null,\"amount\":2,\"bonus_values\":[{\"value\":0.3,\"battle_type\":\"В Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":6,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.35,\"battle_type\":\"В Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":7,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.4,\"battle_type\":\"В Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":8,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.5,\"battle_type\":\"В Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":9,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.55,\"battle_type\":\"В Битвах за Укрепрайон\"}],\"x_level_only\":false},{\"status\":null,\"action_time\":null,\"active_till\":null,\"level\":10,\"activated_at\":null,\"amount\":1,\"bonus_values\":[{\"value\":0.6,\"battle_type\":\"В Битвах за Укрепрайон\"}],\"x_level_only\":false}],\"type\":\"REQUISITION\",\"icon\":\"https:\\/\\/wgsh-wotru-static.wgcdn.co\\/cdn_static\\/reserves\\/requisition.png\"},{\"name\":\"Тактическая подготовка\",\"bonus_type\":\"к боевому опыту\",\"disposable\":false,\"in_stock\":[{\"status\":\"cannot_be_activated\",\"action_time\":7200,\"active_till\":null,\"level\":6,\"activated_at\":null,\"amount\":1,\"bonus_values\":[{\"value\":0.2,\"battle_type\":\"Во всех боях\"}],\"x_level_only\":false},{\"status\":\"cannot_be_activated\",\"action_time\":3600,\"active_till\":null,\"level\":9,\"activated_at\":null,\"amount\":3,\"bonus_values\":[{\"value\":0.5,\"battle_type\":\"Во всех боях\"}],\"x_level_only\":false},{\"status\":\"cannot_be_activated\",\"action_time\":7200,\"active_till\":null,\"level\":10,\"activated_at\":null,\"amount\":1,\"bonus_values\":[{\"value\":0.5,\"battle_type\":\"Во всех боях\"}],\"x_level_only\":false}],\"type\":\"TACTICAL_TRAINING\",\"icon\":\"https:\\/\\/wgsh-wotru-static.wgcdn.co\\/cdn_static\\/reserves\\/tactical-training.png\"}]}";
 
 return f;
 }
@@ -147,18 +155,20 @@ return f;
             registerReceiver(receiver, filter);
 
 
+
 // Поток запросов к серверу
-        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new Runnable() {
+         sF=Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
 
                 String str="";
                 Date currentDate=new Date();
                 String status="";
+                String error="";
                 DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
                 String dateText = dateFormat.format(currentDate);
                 int Attempt=0;
-
+                boolean ifNotic=false;
 
              //Попытка получить корректный ответ
               while (!status.equals("ok")&&(Attempt<MaxAttempt)) {
@@ -175,7 +185,10 @@ return f;
                    dateText = dateFormat.format(currentDate);
 
                    try {JSONObject jsonRoot=new JSONObject(str);
-                       status= jsonRoot.getString("status"); }catch (Exception s){ }
+                       status= jsonRoot.getString("status");
+                       error= str.substring(str.indexOf("message"),str.indexOf("code"));
+                   }catch (Exception s){ }
+
 
 
            }
@@ -218,11 +231,13 @@ int a=1;
                                 if (timeActiveTill != "null") {
 
                                     timeActivatedAt=JsonReserveObject.getString("activated_at");
-
+                                    SimpleDateFormat s = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss");
+                                    String timeString = s.format(new Date(Long.valueOf(timeActivatedAt) * 1000));
 
                                     //Уведомление
-                                    notic(x, true, new Date(Integer.parseInt(timeActivatedAt)*1000).toString() + " " + Integer.toString(Attempt) + " time", StrReservName + ", РЕЗЕРВ АКТИВИРОВАН!!!");
-                                    logString+= new Date(Integer.parseInt(timeActivatedAt)*1000).toString() + " " + Integer.toString(Attempt) + " time "+ ", Резерв "+StrReservName+" активирован \n";
+                                    notic(x, true, timeString + " " + Integer.toString(Attempt) + " time", StrReservName + ", РЕЗЕРВ АКТИВИРОВАН!!!");
+                                    logString+= timeString + " " + Integer.toString(Attempt) + " time "+ ", Резерв "+StrReservName+" активирован \n";
+                                    ifNotic=true;
                                 }
                             }
                         }
@@ -242,10 +257,10 @@ int a=1;
 
 
 //Уведомление, Если резервы не активны
-              if (Attempt!=MaxAttempt) {
+              if ((Attempt!=MaxAttempt)&&(ifNotic==false)) {
                   logString+= dateText + " " + Integer.toString(Attempt) + " time "+status + ", Резервы не активны \n";
-              }else{
-                  logString+= dateText + " " + Integer.toString(Attempt) + " time "+status + ", Сервер не отвечает!\n";
+              }else if (ifNotic==false){
+                  logString+= dateText + " " + Integer.toString(Attempt) + " time: "+status + " error:"+error+" , Сервер не отвечает!\n";
                 }
             }
         }, 0, CountOfPeriod, TimeUnit.SECONDS);
@@ -256,7 +271,7 @@ int a=1;
     public  void notic(int id,boolean sound,String titleStr,String bodyStr){
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_stat_name)
                 .setContentTitle(titleStr)
                 .setContentText(bodyStr);
 
@@ -290,7 +305,25 @@ int a=1;
 
 
 
-        application_id=(String) intent.getExtras().get("application_id");
+
+
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this,
+                0, notificationIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setContentIntent(contentIntent)
+                .setContentTitle("WotStatus")
+                .setSmallIcon(R.drawable.ic_stat_name)
+               .setContentText("     /\\_/\\");
+
+        Notification notification = builder.build();
+
+
+        startForeground(1394,notification);
+
 
 
         return mStartMode;
@@ -314,7 +347,9 @@ int a=1;
     }
     @Override
     public void onDestroy() {
+        sF.cancel(true);
         unregisterReceiver(receiver);
+
     }
 
 
@@ -382,7 +417,7 @@ int a=1;
                 intent1.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                 sendBroadcast(intent1);
 
-                logString="";
+               // logString="";
 
 
 
