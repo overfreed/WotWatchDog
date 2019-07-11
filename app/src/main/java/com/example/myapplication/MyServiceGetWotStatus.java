@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
@@ -304,16 +305,18 @@ int a=1;
 
 
 
-int a;
-a=1;
 
 
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this,
+                0, notificationIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT);
 
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentIntent(contentIntent)
                 .setContentTitle("WotStatus")
-                .setSmallIcon(R.drawable.qwe)
+                .setSmallIcon(R.drawable.ic_stat_name)
                .setContentText("my string");
 
         Notification notification = builder.build();

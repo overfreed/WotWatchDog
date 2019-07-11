@@ -117,8 +117,7 @@ public class MainActivity extends AppCompatActivity {
         View buttonStartServiceView = findViewById(R.id.buttonStartService);
         try {
             if (!playerWotSingleton.access_token.equals("")) {
-
-                buttonStartService(buttonStartServiceView);
+                buttonGetStatus(null);
             } else {
                 //не важно что не тот вью. мы им не пользуемся
                 buttonSignIn(buttonStartServiceView);
