@@ -238,7 +238,7 @@ int a=1;
                                     //Уведомление
                                     notic(x, true, timeString + " " + Integer.toString(Attempt) + " time", "Резерв "+StrReservName + " активирован.");
                                     logString= timeString + " " + Integer.toString(Attempt) + " time "+ ", Резерв "+StrReservName+" активирован \n"+logString;
-                                    newForegroundNotic(13011994,R.drawable.ic_stat_name,"WWD service status","Резерв "+StrReservName + " активирован.");
+                                    newForegroundNotic(1337666,R.drawable.ic_stat_name,"WWD service status","Резерв "+StrReservName + " активирован.");
                                     ifNotic=true;
                                 }
                             }
