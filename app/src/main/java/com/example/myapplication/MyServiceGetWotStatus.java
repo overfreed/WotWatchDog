@@ -64,6 +64,7 @@ public class MyServiceGetWotStatus extends Service {
     public String logString="";
 
     public MyServiceGetWotStatus() { }
+
     ScheduledFuture sF;
     int mStartMode;       // indicates how to behave if the service is killed
     IBinder mBinder;      // interface for clients that bind
@@ -235,8 +236,9 @@ int a=1;
                                     String timeString = s.format(new Date(Long.valueOf(timeActivatedAt) * 1000));
 
                                     //Уведомление
-                                    notic(x, true, timeString + " " + Integer.toString(Attempt) + " time", StrReservName + ", РЕЗЕРВ АКТИВИРОВАН!!!");
-                                    logString+= timeString + " " + Integer.toString(Attempt) + " time "+ ", Резерв "+StrReservName+" активирован \n";
+                                    notic(x, true, timeString + " " + Integer.toString(Attempt) + " time", "Резерв "+StrReservName + " активирован.");
+                                    logString= timeString + " " + Integer.toString(Attempt) + " time "+ ", Резерв "+StrReservName+" активирован \n"+logString;
+                                    newForegroundNotic(1337666,R.drawable.ic_stat_name,"WWD service status","Резерв "+StrReservName + " активирован.");
                                     ifNotic=true;
                                 }
                             }
@@ -258,10 +260,14 @@ int a=1;
 
 //Уведомление, Если резервы не активны
               if ((Attempt!=MaxAttempt)&&(ifNotic==false)) {
-                  logString+= dateText + " " + Integer.toString(Attempt) + " time "+status + ", Резервы не активны \n";
+                  String textOfMessage= dateText + " " + Integer.toString(Attempt) + " time "+status + ", Резервы не активны \n";
+                  logString+= textOfMessage;
+                  newForegroundNotic(13011994,R.drawable.ic_stat_name,"WWD service status",textOfMessage);
               }else if (ifNotic==false){
-                  logString+= dateText + " " + Integer.toString(Attempt) + " time: "+status + " error:"+error+" , Сервер не отвечает!\n";
-                }
+                  String textOfMessage=dateText + " " + Integer.toString(Attempt) + " time: "+status + " error:"+error+" , Сервер не отвечает!\n";
+                  logString+=textOfMessage;
+                  newForegroundNotic(13011994,R.drawable.ic_stat_name,"WWD service status",textOfMessage);
+              }
             }
         }, 0, CountOfPeriod, TimeUnit.SECONDS);
 
@@ -304,8 +310,11 @@ int a=1;
     public int onStartCommand(Intent intent, int flags, int startId) {
 
 
+        newForegroundNotic(13011994,R.drawable.ic_stat_name,"WWD service status","...");
+        return mStartMode;
+    }
 
-
+    public void newForegroundNotic(int idOfNotic,int icon, String title,String text){
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this,
@@ -313,21 +322,22 @@ int a=1;
                 PendingIntent.FLAG_CANCEL_CURRENT);
 
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+        NotificationCompat.Builder ServiceNoticBuilder = new NotificationCompat.Builder(this)
                 .setContentIntent(contentIntent)
-                .setContentTitle("WotStatus")
-                .setSmallIcon(R.drawable.ic_stat_name)
-               .setContentText("     /\\_/\\");
-
-        Notification notification = builder.build();
-
-
-        startForeground(1394,notification);
+                .setContentTitle(title)
+                .setSmallIcon(icon)
+                .setContentText(text);
 
 
 
-        return mStartMode;
-    }
+        Notification notification = ServiceNoticBuilder.build();
+
+
+
+        startForeground(idOfNotic,notification);
+    };
+
+
     @Override
     public IBinder onBind(Intent intent) {
         int a;
