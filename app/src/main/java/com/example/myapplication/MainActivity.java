@@ -27,6 +27,7 @@ import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.evernote.android.job.JobManager;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -125,6 +126,13 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception ex) {
 
         }
+
+
+
+
+        //Inicialisation of JobManager
+        JobManager.create(this).addJobCreator(new WwdJobCreator());
+
     }
 
 
@@ -325,6 +333,22 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    public void startOfJob(View view){
+       // WwdJob.flagExecute=true;
+        WwdJob.scheduleJob();
+
+    }
+
+
+    public void getJobLog(View view){
+        TextView textView = findViewById(R.id.editText2);
+        // задаём текст
+        //  textView.setText(textView.getText() + intent.getStringExtra("logString"));
+        textView.setText(WwdJob.log);
+
+    }
+
 
 
 }

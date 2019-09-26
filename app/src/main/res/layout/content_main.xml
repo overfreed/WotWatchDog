@@ -9,6 +9,18 @@
     tools:showIn="@layout/activity_main">
 
     <Button
+        android:id="@+id/buttonStartService2"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:onClick="startOfJob"
+        android:text="Старт задачи"
+        app:layout_constraintStart_toEndOf="@+id/buttonStartService"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
@@ -79,6 +91,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginBottom="10dp"
+        android:onClick="getJobLog"
         android:text="История резервов"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
