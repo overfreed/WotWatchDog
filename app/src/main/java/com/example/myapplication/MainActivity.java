@@ -57,8 +57,6 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class MainActivity extends AppCompatActivity {
     static String f;
     Intent myService;
-    String application_id = "c5b28492a39dbf3654412f96f3c42e1f";
-    String nameOfFilePlayerWotObj = "PlayerJSON";
     PlayerWotSingleton playerWotSingleton = PlayerWotSingleton.getInstance();
 
 
@@ -72,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //Установка app_id
-        playerWotSingleton.application_id=application_id;
+        playerWotSingleton.application_id=App.application_id;
 
         //Инициализация бродкаст ресивера
         IntentFilter filter = new IntentFilter();
@@ -87,32 +85,7 @@ public class MainActivity extends AppCompatActivity {
         //настройки приложения
 
 
-        try {
-            Gson gson = new Gson();
-            // открываем поток для чтения
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    openFileInput(nameOfFilePlayerWotObj)));
-            String str = "";
-            // читаем содержимое
-            while ((str = br.readLine()) != null) {
-                try {
-                    JSONObject jsonRoot = new JSONObject(str);
 
-
-                    playerWotSingleton.status = jsonRoot.getString("status");
-                    playerWotSingleton.access_token = jsonRoot.getString("access_token");
-                    playerWotSingleton.nickname = jsonRoot.getString("nickname");
-                    playerWotSingleton.account_id = jsonRoot.getString("account_id");
-                    playerWotSingleton.expires_at = jsonRoot.getString("expires_at");
-                } catch (Exception ex) {
-                }
-
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
 //Если есть токен, то запускаем сервис, иначе просим авторизоваться
         View buttonStartServiceView = findViewById(R.id.buttonStartService);
@@ -130,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        //Inicialisation of JobManager
-        JobManager.create(this).addJobCreator(new WwdJobCreator());
+
+
 
     }
 
@@ -286,9 +259,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void ButtonStopClick(View view) throws Exception {
 
-        stopService(myService);
+       // stopService(myService);
+
+
+        playerWotSingleton.flagJobExecute=false;
+        playerWotSingleton.serializePlayerWot(MainActivity.this);
 
         Toast.makeText(this, "Сервис остановлен", LENGTH_SHORT).show();
+
 
 
     }
@@ -307,9 +285,6 @@ public class MainActivity extends AppCompatActivity {
     public void buttonSignIn(View view) throws Exception {
 
         Intent intent = new Intent(MainActivity.this, OpenIdActivity.class);
-        intent.putExtra("application_id", application_id);
-        intent.putExtra("nameOfFilePlayerWotObj", nameOfFilePlayerWotObj);
-
         startActivity(intent);
 
 
@@ -335,7 +310,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startOfJob(View view){
-       // WwdJob.flagExecute=true;
+        playerWotSingleton.flagJobExecute=true;
+        playerWotSingleton.serializePlayerWot(MainActivity.this);
         WwdJob.scheduleJob();
 
     }

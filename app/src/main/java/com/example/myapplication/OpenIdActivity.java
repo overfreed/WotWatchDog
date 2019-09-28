@@ -24,9 +24,6 @@ import java.io.OutputStreamWriter;
 public class OpenIdActivity extends AppCompatActivity {
 
     WebView webView;
-
-    String application_id;
-    String nameOfFilePlayerWotObj;
     PlayerWotSingleton playerWotSingleton=PlayerWotSingleton.getInstance();
 
     @Override
@@ -36,10 +33,6 @@ public class OpenIdActivity extends AppCompatActivity {
         setContentView(R.layout.activity_open_id);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        Bundle arguments = getIntent().getExtras();
-        application_id = arguments.get("application_id").toString();
-        nameOfFilePlayerWotObj=arguments.get("nameOfFilePlayerWotObj").toString();
 
         try {
             View view = findViewById(R.id.editText2);
@@ -56,7 +49,7 @@ public class OpenIdActivity extends AppCompatActivity {
 
     public void buttonTry(View view) throws Exception {
 
-        System.out.println("666!");
+
         setContentView(R.layout.activity_open_id);
 
          webView = (WebView) findViewById(R.id.webView);
@@ -72,33 +65,16 @@ public class OpenIdActivity extends AppCompatActivity {
 
 
 
-                     playerWotSingleton.status=getValue(urlString, "status");
+                     playerWotSingleton.status      =getValue(urlString, "status");
                      playerWotSingleton.access_token=getValue(urlString, "access_token");
-                     playerWotSingleton.nickname=getValue(urlString, "nickname");
-                     playerWotSingleton.account_id=getValue(urlString, "account_id");
-                     playerWotSingleton.expires_at=getValue(urlString, "expires_at");
+                     playerWotSingleton.nickname    =getValue(urlString, "nickname");
+                     playerWotSingleton.account_id  =getValue(urlString, "account_id");
+                     playerWotSingleton.expires_at  =getValue(urlString, "expires_at");
 
-
-                     try{
-                     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(openFileOutput(nameOfFilePlayerWotObj, MODE_PRIVATE)));
-                     // пишем данные
-                         Gson gson=new Gson();
-                         String GsonObject=gson.toJson(playerWotSingleton);
-                     bw.write(GsonObject);
-                     // закрываем поток
-                     bw.close();}catch (Exception ex){};
-
-
-
+                     playerWotSingleton.serializePlayerWot(OpenIdActivity.this);
 
                      putIdInMyActivity();
-
-
-
-
             };
-
-
 
             }
         });
@@ -111,7 +87,7 @@ public class OpenIdActivity extends AppCompatActivity {
 
 
 
-        webView.loadUrl("https://api.worldoftanks.ru/wot/auth/login/?application_id="+application_id+"&redirect_uri=https%3A%2F%2Fapi.worldoftanks.ru%2Fwot%2F%2Fblank%2Fwot%2F");
+        webView.loadUrl("https://api.worldoftanks.ru/wot/auth/login/?application_id="+App.application_id+"&redirect_uri=https%3A%2F%2Fapi.worldoftanks.ru%2Fwot%2F%2Fblank%2Fwot%2F");
 
 
     }
@@ -150,7 +126,7 @@ public class OpenIdActivity extends AppCompatActivity {
 
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        webView.loadUrl("https://api.worldoftanks.ru/wot/auth/login/?application_id="+application_id+"&redirect_uri=https%3A%2F%2Fapi.worldoftanks.ru%2Fwot%2F%2Fblank%2Fwot%2F");
+        webView.loadUrl("https://api.worldoftanks.ru/wot/auth/login/?application_id="+App.application_id+"&redirect_uri=https%3A%2F%2Fapi.worldoftanks.ru%2Fwot%2F%2Fblank%2Fwot%2F");
     }
 
 
