@@ -46,6 +46,7 @@ public class WwdJob extends Job {
                responseOfServer=doGet("https://api.worldoftanks.ru/wot/stronghold/clanreserves/?application_id="+playerWotSingleton.application_id+"&access_token="+playerWotSingleton.access_token);
                jsonRoot=new JSONObject(responseOfServer);
                statusOfRespnse= jsonRoot.getString("status");
+               i++;
            }catch (Exception ex){
                responseOfServer=errorString;
            }
