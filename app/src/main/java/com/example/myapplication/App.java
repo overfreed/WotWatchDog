@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.OnLifecycleEvent;
+import android.content.Context;
 
 import com.evernote.android.job.JobManager;
 import com.google.gson.Gson;
@@ -28,36 +29,9 @@ private PlayerWotSingleton  playerWotSingleton      = PlayerWotSingleton.getInst
     public void onCreate() {
         super.onCreate();
 
-
+        unserializePlayerWotSingleton(App.this,playerWotSingleton);
         //inicialize 'playerWotSingleton' from file 'nameOfFilePlayerWotObj'
-        try {
-            Gson gson = new Gson();
-            // открываем поток для чтения
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    openFileInput(nameOfFilePlayerWotObj)));
-            String str = "";
-            // читаем содержимое
-            while ((str = br.readLine()) != null) {
-                try {
-                    JSONObject jsonRoot = new JSONObject(str);
 
-
-                    playerWotSingleton.status = jsonRoot.getString("status");
-                    playerWotSingleton.access_token = jsonRoot.getString("access_token");
-                    playerWotSingleton.nickname = jsonRoot.getString("nickname");
-                    playerWotSingleton.account_id = jsonRoot.getString("account_id");
-                    playerWotSingleton.expires_at = jsonRoot.getString("expires_at");
-                    playerWotSingleton.flagJobExecute = jsonRoot.getBoolean("flagJobExecute");
-
-                } catch (Exception ex) {
-                }
-
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
 
         //start of job creator
@@ -65,7 +39,35 @@ private PlayerWotSingleton  playerWotSingleton      = PlayerWotSingleton.getInst
     }
 
 
+public static  void  unserializePlayerWotSingleton(Context context,PlayerWotSingleton playerWotSingleton){
 
+    try {
+        Gson gson = new Gson();
+        // открываем поток для чтения
+        BufferedReader br = new BufferedReader(new InputStreamReader(context.openFileInput(nameOfFilePlayerWotObj)));
+        String str = "";
+        // читаем содержимое
+        while ((str = br.readLine()) != null) {
+            try {
+                JSONObject jsonRoot = new JSONObject(str);
+
+                playerWotSingleton.status = jsonRoot.getString("status");
+                playerWotSingleton.access_token = jsonRoot.getString("access_token");
+                playerWotSingleton.nickname = jsonRoot.getString("nickname");
+                playerWotSingleton.account_id = jsonRoot.getString("account_id");
+                playerWotSingleton.expires_at = jsonRoot.getString("expires_at");
+                playerWotSingleton.flagJobExecute = jsonRoot.getBoolean("flagJobExecute");
+
+            } catch (Exception ex) {
+            }
+
+        }
+    } catch (FileNotFoundException e) {
+        e.printStackTrace();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
 
 
 
