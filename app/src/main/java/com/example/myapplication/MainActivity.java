@@ -69,8 +69,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-        //Установка app_id
-        playerWotSingleton.application_id=App.application_id;
 
         //Инициализация бродкаст ресивера
         IntentFilter filter = new IntentFilter();
