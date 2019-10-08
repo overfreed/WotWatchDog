@@ -36,8 +36,9 @@ public class WwdJob extends Job {
         nH= new  NotificationHelper(getContext());
 
     if (playerWotSingleton.flagJobExecute) {
-        wotRequestJob();
         scheduleJob();
+        wotRequestJob();
+
     }
         return Result.SUCCESS;
     }
