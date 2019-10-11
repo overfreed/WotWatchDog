@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayDeque;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -21,6 +22,8 @@ public class PlayerWotSingleton {
     public String account_id="";
     public String expires_at="";
     public Boolean flagJobExecute=false;
+    public ArrayDeque<String> bannedResources;
+
 
 
     public static PlayerWotSingleton instance;
@@ -71,5 +74,10 @@ public class PlayerWotSingleton {
 
         return response.toString();
     }
+
+    public void resourseBanned(String bannedTimeArrivedAt){
+        bannedResources.add(bannedTimeArrivedAt);
+    }
+
 
 }
