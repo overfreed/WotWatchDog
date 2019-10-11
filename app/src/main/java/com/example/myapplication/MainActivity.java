@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     public void buttonSignIn(View view) throws Exception {
         Intent intent = new Intent(MainActivity.this, OpenIdActivity.class);
         startActivity(intent);
