@@ -24,12 +24,24 @@ public class NotificationHelper {
         mContext = context;
     }
 
-    /**
-     * Create and push the notification
-     */
-    public void createNotification(int id,String title, String message)
+
+    private PendingIntent createOnDismissedIntent(Context context, int notificationId,String timeStamp) {
+        Intent intent = new Intent(context, NotificationDismissedReceiver.class);
+        intent.putExtra("notificationId", notificationId);
+        intent.putExtra("timeStamp", timeStamp);
+
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(context.getApplicationContext(),
+                        notificationId, intent, 0);
+        return pendingIntent;
+    }
+
+
+    public void createNotification(int id, String title,  String message) { createNotification(id,title,message,"",0); }
+    public void createNotification(int id,String title, String message,String timeStamp,Integer percentOfProgress)
     {
-        /**Creates an explicit intent for an Activity in your app**/
+        final int maxProgress=100;
+
         Intent resultIntent = new Intent(mContext , MainActivity.class);
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -43,6 +55,8 @@ public class NotificationHelper {
                 .setContentText(message)
                 .setAutoCancel(false)
                 .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
+                .setProgress(maxProgress, percentOfProgress,false)
+                .setDeleteIntent(createOnDismissedIntent(mContext, id,timeStamp))
                 .setContentIntent(resultPendingIntent);
 
         mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
