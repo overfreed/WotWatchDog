@@ -133,7 +133,7 @@ public class WwdJob extends Job {
                           Long timeStampCurrent1 = System.currentTimeMillis() / 1000;
                           Integer timeStampCurrent = Integer.parseInt(String.valueOf(timeStampCurrent1));
 
-                          Integer percentOfReserve = (timeStampCurrent - timeStampActivated) / Integer.parseInt(action_time) * 100;
+                          Integer percentOfReserve = (int)((timeStampCurrent - timeStampActivated) / Float.parseFloat(action_time) * 100);
 
                           if (action_time.equals("7200")) {
                               action_time = "2 часа";
