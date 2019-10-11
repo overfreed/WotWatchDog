@@ -100,15 +100,15 @@ public class MainActivity extends AppCompatActivity {
     public void startOfJob(View view){
         playerWotSingleton.flagJobExecute=true;
         playerWotSingleton.serializePlayerWot(MainActivity.this);
+        playerWotSingleton.bannedResources.clear();
         WwdJob.scheduleJob();
-
+        Toast.makeText(this, "Задача запущена", LENGTH_SHORT).show();
     }
-
 
     public void ButtonStopClick(View view) throws Exception {
         playerWotSingleton.flagJobExecute=false;
         playerWotSingleton.serializePlayerWot(MainActivity.this);
-
+        playerWotSingleton.bannedResources.clear();
         Toast.makeText(this, "Задача остановлена", LENGTH_SHORT).show();
     }
 

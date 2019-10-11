@@ -22,7 +22,8 @@ public class PlayerWotSingleton {
     public String account_id="";
     public String expires_at="";
     public Boolean flagJobExecute=false;
-    public ArrayDeque<String> bannedResources;
+    public ArrayDeque<String> bannedResources= new ArrayDeque<String>();
+
 
 
 
