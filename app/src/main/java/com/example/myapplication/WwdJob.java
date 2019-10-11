@@ -80,6 +80,7 @@ public class WwdJob extends Job {
           i++;
           if (responseOfServer.equals(errorString)||(!statusOfRespnse.equals("ok"))){ try{ TimeUnit.MILLISECONDS.sleep(delayMS); } catch (InterruptedException e) { e.printStackTrace(); }
           }else{ break;}
+
       }
 
       // processing a response from the server
