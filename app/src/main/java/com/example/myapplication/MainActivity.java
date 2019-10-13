@@ -94,7 +94,13 @@ public class MainActivity extends AppCompatActivity {
         SimpleDateFormat s = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss");
         String timeString = s.format(new Date(Long.valueOf(playerWotSingleton.expires_at) * 1000));
 
-        textViewStatusAcc.setText("Игрок: " + playerWotSingleton.nickname + " до: " + timeString);
+        String jobStatusString="";
+      if (playerWotSingleton.flagJobExecute)
+          jobStatusString="\n Задача работает";
+      else
+          jobStatusString="\n Задача не активна";
+
+        textViewStatusAcc.setText("Игрок: " + playerWotSingleton.nickname + " до: " + timeString+jobStatusString);
     }
 
 
