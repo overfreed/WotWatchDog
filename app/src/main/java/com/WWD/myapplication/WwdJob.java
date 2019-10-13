@@ -1,27 +1,26 @@
-package com.example.myapplication;
+package com.WWD.myapplication;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobRequest;
-import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+
+import static android.support.v4.content.ContextCompat.getSystemService;
 
 public class WwdJob extends Job {
 
@@ -85,8 +84,11 @@ public class WwdJob extends Job {
 
       // processing a response from the server
       String statusStringLog="";
+if(i==countOfTry){
+   if(!hasConnection(getContext())) statusStringLog="Нет интернет-соединения."; else statusStringLog="Нет ответа сервера.";
 
-      if ((!responseOfServer.equals(errorString))||statusOfRespnse.equals("ok")){
+   }
+else if ((!responseOfServer.equals(errorString))||statusOfRespnse.equals("ok")){
 
           try {
               JSONArray jsonArray = jsonRoot.getJSONArray("data");
@@ -217,5 +219,26 @@ public class WwdJob extends Job {
                 .schedule();
     }
 
+
+    public static boolean hasConnection(final Context context)
+    {
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        wifiInfo = cm.getActiveNetworkInfo();
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        return false;
+    }
 
 }

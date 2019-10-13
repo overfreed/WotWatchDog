@@ -1,56 +1,16 @@
-package com.example.myapplication;
+package com.WWD.myapplication;
 
-import android.app.ActivityManager;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.evernote.android.job.JobManager;
-import com.google.gson.Gson;
-
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.lang.Exception;
-import java.nio.charset.StandardCharsets;
-import java.util.Calendar;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -85,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     public void buttonSignIn(View view) throws Exception {
         Intent intent = new Intent(MainActivity.this, OpenIdActivity.class);
         startActivity(intent);
+        try{ buttonGetStatus(null);}catch (Exception ex){};
     }
 
 
@@ -100,6 +61,11 @@ public class MainActivity extends AppCompatActivity {
       else
           jobStatusString="\n Задача не активна";
 
+        Integer currentTimeStamp = Integer.parseInt(String.valueOf(System.currentTimeMillis() / 1000));
+        if (Integer.parseInt(playerWotSingleton.expires_at) < currentTimeStamp)
+            jobStatusString="\n Срок истек, выполните вход!";
+
+
         textViewStatusAcc.setText("Игрок: " + playerWotSingleton.nickname + " до: " + timeString+jobStatusString);
     }
 
@@ -110,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         playerWotSingleton.bannedResources.clear();
         WwdJob.scheduleJob();
         Toast.makeText(this, "Задача запущена", LENGTH_SHORT).show();
+       try{ buttonGetStatus(null);}catch (Exception ex){};
     }
 
     public void ButtonStopClick(View view) throws Exception {
@@ -117,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         playerWotSingleton.serializePlayerWot(MainActivity.this);
         playerWotSingleton.bannedResources.clear();
         Toast.makeText(this, "Задача остановлена", LENGTH_SHORT).show();
+        try{ buttonGetStatus(null);}catch (Exception ex){};;
     }
 
 
