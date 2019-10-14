@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.WWD.myapplication;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

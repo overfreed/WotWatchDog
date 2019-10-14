@@ -1,10 +1,9 @@
-package com.example.myapplication;
+package com.WWD.myapplication;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.OnLifecycleEvent;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.evernote.android.job.JobManager;
 import com.google.gson.Gson;
@@ -12,11 +11,9 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 
 
 public class App extends Application {
@@ -37,6 +34,7 @@ private PlayerWotSingleton  playerWotSingleton      = PlayerWotSingleton.getInst
         //start of job creator
         JobManager.create(this).addJobCreator(new WwdJobCreator());
     }
+
 
 
 public static  void  unserializePlayerWotSingleton(Context context,PlayerWotSingleton playerWotSingleton){
@@ -68,6 +66,7 @@ public static  void  unserializePlayerWotSingleton(Context context,PlayerWotSing
         e.printStackTrace();
     }
 }
+
 
 
 
