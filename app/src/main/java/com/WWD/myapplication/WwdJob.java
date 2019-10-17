@@ -26,8 +26,8 @@ public class WwdJob extends Job {
 
     public static final String TAG = "job_demo_tag";
     public static String log = "Begin of log";
-    private PlayerWotSingleton  playerWotSingleton      = PlayerWotSingleton.getInstance();
-   NotificationHelper nH;
+    private PlayerWotSingleton  playerWotSingleton = PlayerWotSingleton.getInstance();
+    NotificationHelper nH;
 
 
     @Override
@@ -45,7 +45,7 @@ public class WwdJob extends Job {
     }
 
 
-  public void wotCheckStatus(){
+  public void  wotCheckStatus(){
         try {
             Integer currentTimeStamp = Integer.parseInt(String.valueOf(System.currentTimeMillis() / 1000));
 
@@ -146,6 +146,8 @@ else if ((!responseOfServer.equals(errorString))||statusOfRespnse.equals("ok")){
 
                           StrReservName = jsonDataRoot.getString("name");
 
+
+
                           //Уведомление
                           nH.createNotification(x, "Резерв " + StrReservName + " активирован.", timeString + " на " + action_time,timeActivatedAt, percentOfReserve);
                           statusStringLog = " Резерв " + StrReservName + " активирован в "+timeString;
@@ -212,8 +214,27 @@ else if ((!responseOfServer.equals(errorString))||statusOfRespnse.equals("ok")){
 
 
     public static void scheduleJob() {
+
+        // new JobRequest.Builder(WwdJob.TAG)
+        //       .setExecutionWindow(30_000L, 40_000L)
+        //     .setUpdateCurrent(true)
+        //   .build()
+        //  .schedule();
+
+        //periodic
         new JobRequest.Builder(WwdJob.TAG)
-                .setExecutionWindow(30_000L, 40_000L)
+                .setPeriodic(TimeUnit.MINUTES.toMillis(15), TimeUnit.MINUTES.toMillis(5))
+                .setUpdateCurrent(true)
+                .build()
+                .schedule();
+
+    }
+
+
+    public static void scheduleNowJob(){
+        //periodic
+        new JobRequest.Builder(WwdJob.TAG)
+                .startNow()
                 .setUpdateCurrent(true)
                 .build()
                 .schedule();

@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         playerWotSingleton.flagJobExecute=true;
         playerWotSingleton.serializePlayerWot(MainActivity.this);
         playerWotSingleton.bannedResources.clear();
-        WwdJob.scheduleJob();
+        WwdJob.scheduleNowJob();
         Toast.makeText(this, "Задача запущена", LENGTH_SHORT).show();
        try{ buttonGetStatus(null);}catch (Exception ex){};
     }
