@@ -1,25 +1,41 @@
 package com.WWD.myapplication;
 
+import android.app.job.JobScheduler;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 
 import com.evernote.android.job.Job;
+import com.evernote.android.job.JobManager;
 import com.evernote.android.job.JobRequest;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import static android.content.Context.MODE_PRIVATE;
+import static android.provider.Telephony.Mms.Part.FILENAME;
 import static android.support.v4.content.ContextCompat.getSystemService;
 
 public class WwdJob extends Job {
@@ -36,10 +52,12 @@ public class WwdJob extends Job {
         nH= new  NotificationHelper(getContext());
 
     if (playerWotSingleton.flagJobExecute) {
-        scheduleJob();
         wotCheckStatus();
         wotRequestJob();
-
+    }
+    else
+    {
+        stopJob();
     }
         return Result.SUCCESS;
     }
@@ -149,7 +167,7 @@ else if ((!responseOfServer.equals(errorString))||statusOfRespnse.equals("ok")){
 
 
                           //Уведомление
-                          nH.createNotification(x, "Резерв " + StrReservName + " активирован.", timeString + " на " + action_time,timeActivatedAt, percentOfReserve);
+                          nH.createNotification(x, "Резерв " + StrReservName + " активирован.", timeString + " на " + action_time,timeActivatedAt, percentOfReserve+3);
                           statusStringLog = " Резерв " + StrReservName + " активирован в "+timeString;
 
                       }
@@ -182,6 +200,8 @@ else if ((!responseOfServer.equals(errorString))||statusOfRespnse.equals("ok")){
 
       //write line to the log
       log="     "+currentDate+" "+statusStringLog+" \n"+log;
+
+      addLogString(statusStringLog,getContext());
   }
 
 
@@ -224,7 +244,6 @@ else if ((!responseOfServer.equals(errorString))||statusOfRespnse.equals("ok")){
         //periodic
         new JobRequest.Builder(WwdJob.TAG)
                 .setPeriodic(TimeUnit.MINUTES.toMillis(15), TimeUnit.MINUTES.toMillis(5))
-                .setUpdateCurrent(true)
                 .build()
                 .schedule();
 
@@ -232,13 +251,17 @@ else if ((!responseOfServer.equals(errorString))||statusOfRespnse.equals("ok")){
 
 
     public static void scheduleNowJob(){
-        //periodic
         new JobRequest.Builder(WwdJob.TAG)
                 .startNow()
-                .setUpdateCurrent(true)
                 .build()
                 .schedule();
     }
+
+
+    public  static void stopJob(){
+        JobManager.instance().cancelAllForTag(WwdJob.TAG);
+    }
+
 
 
     public static boolean hasConnection(final Context context)
@@ -261,5 +284,106 @@ else if ((!responseOfServer.equals(errorString))||statusOfRespnse.equals("ok")){
         }
         return false;
     }
+
+
+    private static final  String  logPath="log";
+
+    public static Integer countOfLineLog=0;
+
+    public static void addLogString(String text,Context context){
+
+
+
+            try {
+                // отрываем поток для записи
+                String currentDate=new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+                BufferedWriter bw=null;
+                if (countOfLineLog<1000)
+                    bw = new BufferedWriter(new OutputStreamWriter(context.openFileOutput(logPath, Context.MODE_APPEND)));
+                else
+                    bw = new BufferedWriter(new OutputStreamWriter(context.openFileOutput(logPath, Context.MODE_PRIVATE)));
+                // пишем данные
+                bw.append("     "+currentDate+" "+text+"\n");
+                // закрываем поток
+                bw.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        ReadLogFile(context);
+
+    }
+
+
+    public static String ReadLogFile(Context context){
+        countOfLineLog=0;
+        String str = "";
+        try {
+            // открываем поток для чтения
+            BufferedReader br = new BufferedReader(new InputStreamReader(context.openFileInput(logPath)));
+            // читаем содержимое
+
+         String strCurrentLine="";
+            while ((strCurrentLine = br.readLine()) != null) {
+             str+=strCurrentLine+"\n";
+                countOfLineLog++;
+            }
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return str;
+    }
+
+
+
+    public static int countLinesNew(String filename) throws IOException {
+        InputStream is = new BufferedInputStream(new FileInputStream(filename));
+        try {
+            byte[] c = new byte[1024];
+
+            int readChars = is.read(c);
+            if (readChars == -1) {
+                // bail out if nothing to read
+                return 0;
+            }
+
+            // make it easy for the optimizer to tune this loop
+            int count = 0;
+            while (readChars == 1024) {
+                for (int i=0; i<1024;) {
+                    if (c[i++] == '\n') {
+                        ++count;
+                    }
+                }
+                readChars = is.read(c);
+            }
+
+            // count remaining characters
+            while (readChars != -1) {
+                System.out.println(readChars);
+                for (int i=0; i<readChars; ++i) {
+                    if (c[i] == '\n') {
+                        ++count;
+                    }
+                }
+                readChars = is.read(c);
+            }
+
+            return count == 0 ? 1 : count;
+        } finally {
+            is.close();
+        }
+    }
+
+
+
+
 
 }
