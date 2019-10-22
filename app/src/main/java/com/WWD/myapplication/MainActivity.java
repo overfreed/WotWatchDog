@@ -50,23 +50,28 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void buttonGetStatus(View view) throws Exception {
-        TextView textViewStatusAcc = findViewById(R.id.textViewStatusAcc);
 
-        SimpleDateFormat s = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss");
-        String timeString = s.format(new Date(Long.valueOf(playerWotSingleton.expires_at) * 1000));
+       try {
+           TextView textViewStatusAcc = findViewById(R.id.textViewStatusAcc);
 
-        String jobStatusString="";
-      if (playerWotSingleton.flagJobExecute)
-          jobStatusString="\n Задача работает";
-      else
-          jobStatusString="\n Задача не активна";
+           SimpleDateFormat s = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss");
+           String timeString = s.format(new Date(Long.valueOf(playerWotSingleton.expires_at) * 1000));
 
-        Integer currentTimeStamp = Integer.parseInt(String.valueOf(System.currentTimeMillis() / 1000));
-        if (Integer.parseInt(playerWotSingleton.expires_at) < currentTimeStamp)
-            jobStatusString="\n Срок истек, выполните вход!";
+           String jobStatusString = "";
+           if (playerWotSingleton.flagJobExecute)
+               jobStatusString = "\n Задача работает";
+           else
+               jobStatusString = "\n Задача не активна";
+
+           Integer currentTimeStamp = Integer.parseInt(String.valueOf(System.currentTimeMillis() / 1000));
+           if (Integer.parseInt(playerWotSingleton.expires_at) < currentTimeStamp)
+               jobStatusString = "\n Срок истек, выполните вход!";
 
 
-        textViewStatusAcc.setText("Игрок: " + playerWotSingleton.nickname + " до: " + timeString+jobStatusString);
+           textViewStatusAcc.setText("Игрок: " + playerWotSingleton.nickname + " до: " + timeString + jobStatusString);
+       }catch (Exception e) {
+           e.printStackTrace();
+       }
     }
 
 
@@ -82,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
        try{ buttonGetStatus(null);}catch (Exception ex){};
     }
 
+
     public void ButtonStopClick(View view) throws Exception {
         WwdJob.addLogString("STOP",this);
         playerWotSingleton.flagJobExecute=false;
@@ -92,16 +98,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
-
     public void getJobLog(View view){
         TextView textView = findViewById(R.id.editText2);
         //textView.setText(WwdJob.log);
         textView.setText(WwdJob.ReadLogFile(this));
-
     }
 
 

@@ -5,38 +5,24 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
-
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobManager;
 import com.evernote.android.job.JobRequest;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import static android.content.Context.MODE_PRIVATE;
-import static android.provider.Telephony.Mms.Part.FILENAME;
-import static android.support.v4.content.ContextCompat.getSystemService;
 
 public class WwdJob extends Job {
 
@@ -235,12 +221,6 @@ else if ((!responseOfServer.equals(errorString))||statusOfRespnse.equals("ok")){
 
     public static void scheduleJob() {
 
-        // new JobRequest.Builder(WwdJob.TAG)
-        //       .setExecutionWindow(30_000L, 40_000L)
-        //     .setUpdateCurrent(true)
-        //   .build()
-        //  .schedule();
-
         //periodic
         new JobRequest.Builder(WwdJob.TAG)
                 .setPeriodic(TimeUnit.MINUTES.toMillis(15), TimeUnit.MINUTES.toMillis(5))
@@ -291,8 +271,6 @@ else if ((!responseOfServer.equals(errorString))||statusOfRespnse.equals("ok")){
     public static Integer countOfLineLog=0;
 
     public static void addLogString(String text,Context context){
-
-
 
             try {
                 // отрываем поток для записи
