@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WotWatchDog</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_open_id">OpenIdActivity</string>
+    <string name="app_name">"WoT резервы"</string>
+    <string name="action_settings">"Настройки"</string>
+    <string name="title_activity_open_id">"Авторизация"</string>
 </resources>

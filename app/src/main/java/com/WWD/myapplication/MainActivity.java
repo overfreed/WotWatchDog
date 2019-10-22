@@ -71,15 +71,19 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void startOfJob(View view){
+        WwdJob.addLogString("START",this);
         playerWotSingleton.flagJobExecute=true;
         playerWotSingleton.serializePlayerWot(MainActivity.this);
         playerWotSingleton.bannedResources.clear();
+        WwdJob.stopJob();
+        WwdJob.scheduleNowJob();
         WwdJob.scheduleJob();
         Toast.makeText(this, "Задача запущена", LENGTH_SHORT).show();
        try{ buttonGetStatus(null);}catch (Exception ex){};
     }
 
     public void ButtonStopClick(View view) throws Exception {
+        WwdJob.addLogString("STOP",this);
         playerWotSingleton.flagJobExecute=false;
         playerWotSingleton.serializePlayerWot(MainActivity.this);
         playerWotSingleton.bannedResources.clear();
@@ -95,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void getJobLog(View view){
         TextView textView = findViewById(R.id.editText2);
-        textView.setText(WwdJob.log);
+        //textView.setText(WwdJob.log);
+        textView.setText(WwdJob.ReadLogFile(this));
 
     }
 

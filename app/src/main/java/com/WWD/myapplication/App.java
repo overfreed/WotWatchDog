@@ -27,9 +27,6 @@ private PlayerWotSingleton  playerWotSingleton      = PlayerWotSingleton.getInst
         super.onCreate();
 
         unserializePlayerWotSingleton(App.this,playerWotSingleton);
-        //inicialize 'playerWotSingleton' from file 'nameOfFilePlayerWotObj'
-
-
 
         //start of job creator
         JobManager.create(this).addJobCreator(new WwdJobCreator());
