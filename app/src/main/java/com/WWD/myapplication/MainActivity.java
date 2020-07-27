@@ -18,7 +18,6 @@ public class MainActivity extends AppCompatActivity {
     static String f;
     PlayerWotSingleton playerWotSingleton = PlayerWotSingleton.getInstance();
 
-
     //my git comment 3
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +39,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
     public void buttonSignIn(View view) throws Exception {
         Intent intent = new Intent(MainActivity.this, OpenIdActivity.class);
         startActivity(intent);
         try{ buttonGetStatus(null);}catch (Exception ex){};
     }
-
 
     public void buttonGetStatus(View view) throws Exception {
         TextView textViewStatusAcc = findViewById(R.id.textViewStatusAcc);
@@ -65,10 +61,8 @@ public class MainActivity extends AppCompatActivity {
         if (Integer.parseInt(playerWotSingleton.expires_at) < currentTimeStamp)
             jobStatusString="\n Срок истек, выполните вход!";
 
-
         textViewStatusAcc.setText("Игрок: " + playerWotSingleton.nickname + " до: " + timeString+jobStatusString);
     }
-
 
     public void startOfJob(View view){
         WwdJob.addLogString("START",this);
@@ -91,19 +85,14 @@ public class MainActivity extends AppCompatActivity {
         try{ buttonGetStatus(null);}catch (Exception ex){};;
     }
 
-
-
-
-
-
-
     public void getJobLog(View view){
         TextView textView = findViewById(R.id.editText2);
         //textView.setText(WwdJob.log);
         textView.setText(WwdJob.ReadLogFile(this));
-
     }
 
-
+    public void buttonAbout(View view) throws Exception {
+        Toast.makeText(this, "Версия 1.0", LENGTH_SHORT).show();
+    }
 
 }

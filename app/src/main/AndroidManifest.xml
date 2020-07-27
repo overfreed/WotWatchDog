@@ -41,7 +41,7 @@
 
         <receiver
             android:name="com.WWD.myapplication.NotificationDismissedReceiver"
-            android:exported="false" >
+            android:exported="false">
         </receiver>
 
 

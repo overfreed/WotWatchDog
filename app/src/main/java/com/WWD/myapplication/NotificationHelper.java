@@ -32,7 +32,7 @@ public class NotificationHelper {
 
         PendingIntent pendingIntent =
                 PendingIntent.getBroadcast(context.getApplicationContext(),
-                        notificationId, intent, 0);
+                        notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         return pendingIntent;
     }
 
